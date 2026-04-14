@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BathongThem Complaint Submission</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background: #e53935;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+  }
+  main {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+  }
+  h2 {
+    color: #e53935;
+    margin-bottom: 1rem;
+  }
+  form label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+  }
+  form input, form textarea, form select {
+    width: 100%;
+    padding: 0.6rem;
+    margin-top: 0.3rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  form textarea {
+    min-height: 100px;
+  }
+  #signature-pad {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+  }
+  button {
+    margin-top: 1.5rem;
+    background: #e53935;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  button:hover {
+    background: #d32f2f;
+  }
+  .required {
+    color: red;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>BathongThem Complaint Submission</h1>
+</header>
+
+<main>
+  <h2>Submit Your Complaint</h2>
+  <form id="complaintForm">
+    
+    <label>Full Name <span class="required">*</span></label>
+    <input type="text" name="fullName" required>
+
+    <label>ID / Passport Number <span class="required">*</span></label>
+    <input type="text" name="idNumber" required>
+
+    <label>Email <span class="required">*</span></label>
+    <input type="email" name="email" required>
+
+    <label>Phone Number <span class="required">*</span></label>
+    <input type="tel" name="phone" required>
+
+    <label>Business / Person Being Complained About <span class="required">*</span></label>
+    <input type="text" name="business" required>
+
+    <label>Date of Incident <span class="required">*</span></label>
+    <input type="date" name="incidentDate" required>
+
+    <label>Incident Description <span class="required">*</span></label>
+    <textarea name="incidentDescription" required></textarea>
+
+    <label>Loss / Damage Incurred</label>
+    <textarea name="lossDamage"></textarea>
+
+    <label>Upload Evidence</label>
+    <input type="file" name="evidence" multiple>
+
+    <label>Desired Resolution <span class="required">*</span></label>
+    <select name="resolution" required>
+      <option value="">--Select--</option>
+      <option value="refund">Refund</option>
+      <option value="replacement">Replacement</option>
+      <option value="apology">Apology</option>
+      <option value="serviceCompletion">Service Completion</option>
+      <option value="compensation">Compensation</option>
+    </select>
+
+    <label>Signature (Sign with mouse or finger) <span class="required">*</span></label>
+    <canvas id="signature-pad" width="600" height="200"></canvas>
+    <button type="button" id="clearSignature">Clear Signature</button>
+
+    <label>
+      <input type="checkbox" name="consent" required> I authorize BathongThem to act on my behalf and confirm that all information is true.
+    </label>
+
+    <button type="submit">Submit Complaint</button>
+  </form>
+
+  <div id="message" style="margin-top: 1rem; color: green;"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.0/dist/signature_pad.umd.min.js"></script>
+<script>
+  const canvas = document.getElementById('signature-pad');
+  const signaturePad = new SignaturePad(canvas);
+
+  document.getElementById('clearSignature').addEventListener('click', () => {
+    signaturePad.clear();
+  });
+
+  const form = document.getElementById('complaintForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(signaturePad.isEmpty()){
+      alert("Please provide your signature.");
+      return;
+    }
+
+    // Gather form data
+    const formData = new FormData(form);
+    formData.append('signature', signaturePad.toDataURL());
+
+    // For demo: log all form data
+    console.log("Submitting complaint:");
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    // Show success message
+    document.getElementById('message').textContent = "Your complaint has been submitted successfully!";
+    
+    // Reset form and signature
+    form.reset();
+    signaturePad.clear();
+  });
+</script>
+
+</body>
+</html>
